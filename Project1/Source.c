@@ -2,46 +2,49 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <ctype.h>
+# define N  256
 
 //int check_number(unsigned long long int num);
 void word_out(int digit_rank, int digit, int prev_digit);
 void dec_out(int digit_rank, int digit);
+unsigned long long int strCheck(char str[N]);
 
 int main()
 {
-	//unsigned long long int number;          //0 to 18,446,744,073,709,551,615
-	char number[21];
+	unsigned long long int number = 0;          //0 to 18,446,744,073,709,551,615
+	char numbers[21];
 	int counter;
-	int N = 20;
+	//int N = 20;
 	int digits[20][1];
-	//char test;
+	char  in[N];
+	
 	size_t res = 0;
+
 	setlocale(LC_ALL, "Rus");
 	system("color F0");
 
-	printf("%s", "Введите натуральное число ");
-	scanf("%s", number);
-	//scanf("%c", &number);
-	//number = 18446744073709551615;
-	//number = 120929;
-	/*
-	if (check_number(number) != 1)
+	printf("Введите натуральное число не больше 18,446,744,073,709,551,615: ");
+	gets(in);
+	number = strCheck(in);
+	switch (number)
 	{
+	case 1:
+		printf("Ошибка: введено не натуральное число число\n");
+		system("pause");
 		return 1;
+		break;
+	case 2:
+		printf("Ошибка: введеное число слишком большое.\n");
+		system("pause");
+		return 2;
+		break;
 	}
-	*/
-	res = strchr(number, '\0');
-	if (strchr(number, '\0') == NULL)
-	{
-		printf("%s", "error");
-	}
-	for (int j = 0; j < N; j++)
-	{
-		digits[j][0] = 0;
-	}
+	printf("Вы ввели число %llu \n", number);
 	
-	counter = 0;
 	/*
+	counter = 0;
 	while (number)
 	{
 		digits[counter][0] = number % 10;
@@ -60,10 +63,42 @@ int main()
 		{
 			word_out(j, digits[j][0], digits[j - 1][0]);
 		}
-	}*/
+	}
+	*/
 	printf("%c", '\n');
 	system("pause");
 	return 0;
+}
+
+unsigned long long int strCheck(char str[N])
+{
+	int i;
+	unsigned long long int number;
+	char* endptr;
+	if (strlen(str) > 20)
+	{
+		//printf("Ошибка: число слишком большое.\n");
+		return 2;
+	}
+	for (i = 0; i < strlen(str); i++)
+	{
+		if (isdigit(str[i]) == 0)
+		{
+			//printf("Ошибка: введено не число");
+			return 1;
+		}
+	}
+	errno = 0;
+	number = strtoull(str, &endptr, 10);
+	if (errno == ERANGE)
+	{
+		//printf("Ошибка: введено слишком большое число.\n");
+		return 2;
+	}
+	else {
+		return number;
+	}
+	//return 0;
 }
 
 void word_out(int digit_rank, int digit, int prev_digit)
@@ -163,7 +198,7 @@ void word_out(int digit_rank, int digit, int prev_digit)
 			break;
 		}
 		break;
-	case 3:
+	case 3:	//тысячи
 		switch (digit)
 		{
 		case 1:
@@ -454,6 +489,103 @@ void word_out(int digit_rank, int digit, int prev_digit)
 			break;
 		}
 		break;
+	case 12:	//триллион
+		switch (digit)
+		{
+		case 1:
+			printf("%s", "один триллион ");
+			break;
+		case 2:
+			printf("%s", "два триллиона ");
+			break;
+		case 3:
+			printf("%s", "три триллиона ");
+			break;
+		case 4:
+			printf("%s", "четыре триллиона ");
+			break;
+		case 5:
+			printf("%s", "пять триллионов ");
+			break;
+		case 6:
+			printf("%s", "шесть триллионов ");
+			break;
+		case 7:
+			printf("%s", "семь триллионов ");
+			break;
+		case 8:
+			printf("%s", "восемь триллионов ");
+			break;
+		case 9:
+			printf("%s", "девять триллионов ");
+			break;
+		}
+		break;
+	case 13:	//десятки триллион
+		switch (digit)
+		{
+		case 2:
+			printf("%s", "двадцать ");
+			break;
+		case 3:
+			printf("%s", "тридцать ");
+			break;
+		case 4:
+			printf("%s", "сорок ");
+			break;
+		case 5:
+			printf("%s", "пятьдесят ");
+			break;
+		case 6:
+			printf("%s", "шестьдесят ");
+			break;
+		case 7:
+			printf("%s", "семьдесят ");
+			break;
+		case 8:
+			printf("%s", "восемьдесят ");
+			break;
+		case 9:
+			printf("%s", "девяносто ");
+			break;
+		}
+		if (prev_digit == 0)
+		{
+			printf("%s", "триллионов ");
+		}
+		break;
+	case 14:	//сотни триллион
+		switch (digit)
+		{
+		case 1:
+			printf("%s", "сто ");
+			break;
+		case 2:
+			printf("%s", "двести ");
+			break;
+		case 3:
+			printf("%s", "триста ");
+			break;
+		case 4:
+			printf("%s", "четыреста ");
+			break;
+		case 5:
+			printf("%s", "пятьсот ");
+			break;
+		case 6:
+			printf("%s", "шестьсот ");
+			break;
+		case 7:
+			printf("%s", "семьсот ");
+			break;
+		case 8:
+			printf("%s", "восемьсот ");
+			break;
+		case 9:
+			printf("%s", "девятьсот ");
+			break;
+		}
+		break;
 	}
 }
 
@@ -517,7 +649,7 @@ void dec_out(int digit_rank, int digit)
 		printf("%s", " квинтиллионов ");
 	}
 }
-/*
+
 int check_number(unsigned long long int num)
 {
 	if (num == 0)
@@ -532,4 +664,3 @@ int check_number(unsigned long long int num)
 	}
 	return 1;
 }
-*/
