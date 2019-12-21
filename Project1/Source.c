@@ -4,47 +4,51 @@
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
-# define N  256
 
-//int check_number(unsigned long long int num);
-void word_out(int digit_rank, int digit, int prev_digit);
-void dec_out(int digit_rank, int digit);
-unsigned long long int strCheck(char str[N]);
+void word_out(int digit_rank, int digit, int prev_digit, char num[500]);
+void dec_out(int digit_rank, int digit, char num[500]);
+unsigned long long int strCheck(char str[256]);
 
 int main()
 {
-	unsigned long long int number = 0;          //0 to 18,446,744,073,709,551,615
+	unsigned long long int number;          //0 to 18,446,744,073,709,551,615
 	int counter;
-	//int N = 20;
 	int digits[20];
-	char  in[N];
-	//size_t res = 0;
+	char in[21];
+	char numeral[500];
 
 	setlocale(LC_ALL, "Rus");
 	system("color F0");
 
-	printf("Введите натуральное число не больше 18,446,744,073,709,551,615: ");
+	printf("Введите натуральное число не больше 18,446,744,073,709,551,615:\n");
 	gets(in);
 	number = strCheck(in);
 	switch (number)
 	{
 	case 0:
-		printf("Ошибка: 0 не натуральное число\n");
+		printf("Ошибка: 0 не натуральное число.\n");
 		system("pause");
 		return 1;
 		break;
-	case 1:
-		printf("Ошибка: введено не натуральное число число\n");
+	case -4:
+		printf("Ошибка: введено не натуральное число число.\n");
 		system("pause");
 		return 2;
 		break;
-	case 2:
+	case -2:
 		printf("Ошибка: введеное число слишком большое.\n");
 		system("pause");
 		return 3;
 		break;
+	case -3:
+		printf("Ошибка: данные не введены.\n");
+		system("pause");
+		return 4;
+		break;
 	}
-	printf("Вы ввели число %llu \n", number);
+	printf("Введенное число: %llu \n", number);
+	numeral[0] = '\0';
+	printf("Число числительным:\n");
 	counter = 0;
 	while (number)
 	{
@@ -56,82 +60,176 @@ int main()
 	{
 		if ((j - 1) % 3 == 0 && digits[j] == 1)
 		{
-			dec_out(j, digits[j - 1]);
+			dec_out(j, digits[j - 1], numeral);
 			j -= 1;
 		}
 		else
 		{
-			if (j == 0) word_out(j, digits[j], 1);
-			else word_out(j, digits[j], digits[j - 1]);
+			if (j == 0) word_out(j, digits[j], 1, numeral);
+			else word_out(j, digits[j], digits[j - 1], numeral);
 		}
 	}
-	
+	printf(numeral);
 	printf("%c", '\n');
 	system("pause");
 	return 0;
 }
 
-unsigned long long int strCheck(char str[N])
+unsigned long long int strCheck(char str[256])
 {
 	int i;
 	unsigned long long int number;
-	//char* endptr;
 	if (strlen(str) > 20)
 	{
-		return 2;
+		return -2;
 	}
-	for (i = 0; i < strlen(str); i++)
+	if (strlen(str) == 0)
+	{
+		return -3;
+	}
+	i = 0;
+	for (i; i < strlen(str); i++)
 	{
 		if (isdigit(str[i]) == 0)
 		{
-			return 1;
+			return -4;
 		}
 	}
 	errno = 0;
 	number = strtoull(str, NULL, 10);
 	if (errno == ERANGE)
 	{
-		return 2;
+		return -2;
 	}
 	else {
 		return number;
 	}
-	//return 0;
 }
 
-void word_out(int digit_rank, int digit, int prev_digit)
+void dec_out(int digit_rank, int digit, char num[500])
 {
+	switch (digit)
+	{
+	case 0:
+		strcat(num, "десять");
+		break;
+	case 1:
+		strcat(num, "одиннадцать");
+		break;
+	case 2:
+		strcat(num, "двенадцать");
+		break;
+	case 3:
+		strcat(num, "тринадцать");
+		break;
+	case 4:
+		strcat(num, "четырнадцать");
+		break;
+	case 5:
+		strcat(num, "пятнадцать");
+		break;
+	case 6:
+		strcat(num, "шестнадцать");
+		break;
+	case 7:
+		strcat(num, "семнадцать");
+		break;
+	case 8:
+		strcat(num, "восемнадцать");
+		break;
+	case 9:
+		strcat(num, "девятнадцать");
+		break;
+	}
+	switch (digit_rank)
+	{
+	case 4:
+		strcat(num, " тысяч ");
+		break;
+	case 7:
+		strcat(num, " миллионов ");
+		break;
+	case 10:
+		strcat(num, " миллиардов ");
+		break;
+	case 13:
+		strcat(num, " триллионов ");
+		break;
+	case 16:
+		strcat(num, " квадриллионов ");
+		break;
+	case 19:
+		strcat(num, " квинтиллионов ");
+		break;
+	}
+}
+
+void word_out(int digit_rank, int digit, int prev_digit, char num[500])
+{
+	if (digit_rank == 2 || digit_rank == 5 || digit_rank == 8 || digit_rank == 11 || digit_rank == 14 || digit_rank == 17)
+	{
+		switch (digit)
+		{
+		case 1:
+			strcat(num, "сто ");
+			break;
+		case 2:
+			strcat(num, "двести ");
+			break;
+		case 3:
+			strcat(num, "триста ");
+			break;
+		case 4:
+			strcat(num, "четыреста ");
+			break;
+		case 5:
+			strcat(num, "пятьсот ");
+			break;
+		case 6:
+			strcat(num, "шестьсот ");
+			break;
+		case 7:
+			strcat(num, "семьсот ");
+			break;
+		case 8:
+			strcat(num, "восемьсот ");
+			break;
+		case 9:
+			strcat(num, "девятьсот ");
+			break;
+		}
+	}
 	switch (digit_rank)
 	{
 	case 0: //единицы
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "один");
+			strcat(num, "один");
 			break;
 		case 2:
-			printf("%s", "два");
+			strcat(num, "два");
 			break;
 		case 3:
-			printf("%s", "три");
+			strcat(num, "три");
 			break;
 		case 4:
-			printf("%s", "четыре");
+			strcat(num, "четыре");
 			break;
 		case 5:
-			printf("%s", "пять");
+			strcat(num, "пять");
 			break;
 		case 6:
-			printf("%s", "шесть");
+			strcat(num, "шесть");
 			break;
 		case 7:
-			printf("%s", "семь");
+			strcat(num, "семь");
 			break;
 		case 8:
-			printf("%s", "восемь");
+			strcat(num, "восемь");
 			break;
 		case 9:
-			printf("%s", "девять");
+			strcat(num, "девять");
 			break;
 		}
 		break;
@@ -139,93 +237,60 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		break;
-	case 2: //сотни
-		switch (digit)
-		{
-		case 1:
-			printf("%s", "сто ");
-			break;
-		case 2:
-			printf("%s", "двести ");
-			break;
-		case 3:
-			printf("%s", "триста ");
-			break;
-		case 4:
-			printf("%s", "четыреста ");
-			break;
-		case 5:
-			printf("%s", "пятьсот ");
-			break;
-		case 6:
-			printf("%s", "шестьсот ");
-			break;
-		case 7:
-			printf("%s", "семьсот ");
-			break;
-		case 8:
-			printf("%s", "восемьсот ");
-			break;
-		case 9:
-			printf("%s", "девятьсот ");
-			break;
-		}
-		break;
-	//////////////////////////////////////////////
 	case 3:	//тысячи
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "одна тысяча ");
+			strcat(num, "одна тысяча ");
 			break;
 		case 2:
-			printf("%s", "две тысячи ");
+			strcat(num, "две тысячи ");
 			break;
 		case 3:
-			printf("%s", "три тысячи ");
+			strcat(num, "три тысячи ");
 			break;
 		case 4:
-			printf("%s", "четыре тысячи ");
+			strcat(num, "четыре тысячи ");
 			break;
 		case 5:
-			printf("%s", "пять тысяч ");
+			strcat(num, "пять тысяч ");
 			break;
 		case 6:
-			printf("%s", "шесть тысяч ");
+			strcat(num, "шесть тысяч ");
 			break;
 		case 7:
-			printf("%s", "семь тысяч ");
+			strcat(num, "семь тысяч ");
 			break;
 		case 8:
-			printf("%s", "восемь тысяч ");
+			strcat(num, "восемь тысяч ");
 			break;
 		case 9:
-			printf("%s", "девять тысяч ");
+			strcat(num, "девять тысяч ");
 			break;
 		}
 		break;
@@ -233,97 +298,64 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		if (prev_digit == 0)
 		{
-			printf("%s", "тысяч ");
+			strcat(num, "тысяч ");
 		}
 		break;
-	case 5:	//сотни тысяч
-		switch (digit)
-		{
-		case 1:
-			printf("%s", "сто ");
-			break;
-		case 2:
-			printf("%s", "двести ");
-			break;
-		case 3:
-			printf("%s", "триста ");
-			break;
-		case 4:
-			printf("%s", "четыреста ");
-			break;
-		case 5:
-			printf("%s", "пятьсот ");
-			break;
-		case 6:
-			printf("%s", "шестьсот ");
-			break;
-		case 7:
-			printf("%s", "семьсот ");
-			break;
-		case 8:
-			printf("%s", "восемьсот ");
-			break;
-		case 9:
-			printf("%s", "девятьсот ");
-			break;
-		}
-		break;
-	////////////////////////////////////////////////
 	case 6:	//миллионы
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "один миллион ");
+			strcat(num, "один миллион ");
 			break;
 		case 2:
-			printf("%s", "два миллиона  ");
+			strcat(num, "два миллиона  ");
 			break;
 		case 3:
-			printf("%s", "три миллиона ");
+			strcat(num, "три миллиона ");
 			break;
 		case 4:
-			printf("%s", "четыре миллиона ");
+			strcat(num, "четыре миллиона ");
 			break;
 		case 5:
-			printf("%s", "пять миллионов ");
+			strcat(num, "пять миллионов ");
 			break;
 		case 6:
-			printf("%s", "шесть миллионов ");
+			strcat(num, "шесть миллионов ");
 			break;
 		case 7:
-			printf("%s", "семь миллионов ");
+			strcat(num, "семь миллионов ");
 			break;
 		case 8:
-			printf("%s", "восемь миллионов ");
+			strcat(num, "восемь миллионов ");
 			break;
 		case 9:
-			printf("%s", "девять миллионов ");
+			strcat(num, "девять миллионов ");
 			break;
 		}
 		break;
@@ -331,97 +363,64 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		if (prev_digit == 0)
 		{
-			printf("%s", "миллионов ");
+			strcat(num, "миллионов ");
 		}
 		break;
-	case 8:	//сотни миллионов
-		switch (digit)
-		{
-		case 1:
-			printf("%s", "сто ");
-			break;
-		case 2:
-			printf("%s", "двести ");
-			break;
-		case 3:
-			printf("%s", "триста ");
-			break;
-		case 4:
-			printf("%s", "четыреста ");
-			break;
-		case 5:
-			printf("%s", "пятьсот ");
-			break;
-		case 6:
-			printf("%s", "шестьсот ");
-			break;
-		case 7:
-			printf("%s", "семьсот ");
-			break;
-		case 8:
-			printf("%s", "восемьсот ");
-			break;
-		case 9:
-			printf("%s", "девятьсот ");
-			break;
-		}
-		break;
-	//////////////////////////////////////////////////////
 	case 9:	//миллиарды
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "один миллиард ");
+			strcat(num, "один миллиард ");
 			break;
 		case 2:
-			printf("%s", "два миллиарда ");
+			strcat(num, "два миллиарда ");
 			break;
 		case 3:
-			printf("%s", "три миллиарда ");
+			strcat(num, "три миллиарда ");
 			break;
 		case 4:
-			printf("%s", "четыре миллиарда ");
+			strcat(num, "четыре миллиарда ");
 			break;
 		case 5:
-			printf("%s", "пять миллиардов ");
+			strcat(num, "пять миллиардов ");
 			break;
 		case 6:
-			printf("%s", "шесть миллиардов ");
+			strcat(num, "шесть миллиардов ");
 			break;
 		case 7:
-			printf("%s", "семь миллиардов ");
+			strcat(num, "семь миллиардов ");
 			break;
 		case 8:
-			printf("%s", "восемь миллиардов ");
+			strcat(num, "восемь миллиардов ");
 			break;
 		case 9:
-			printf("%s", "девять миллиардов ");
+			strcat(num, "девять миллиардов ");
 			break;
 		}
 		break;
@@ -429,97 +428,64 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		if (prev_digit == 0)
 		{
-			printf("%s", "миллиардов ");
+			strcat(num, "миллиардов ");
 		}
 		break;
-	case 11:	//сотни миллиардов
-		switch (digit)
-		{
-		case 1:
-			printf("%s", "сто ");
-			break;
-		case 2:
-			printf("%s", "двести ");
-			break;
-		case 3:
-			printf("%s", "триста ");
-			break;
-		case 4:
-			printf("%s", "четыреста ");
-			break;
-		case 5:
-			printf("%s", "пятьсот ");
-			break;
-		case 6:
-			printf("%s", "шестьсот ");
-			break;
-		case 7:
-			printf("%s", "семьсот ");
-			break;
-		case 8:
-			printf("%s", "восемьсот ");
-			break;
-		case 9:
-			printf("%s", "девятьсот ");
-			break;
-		}
-		break;
-	///////////////////////////////////////////////////
 	case 12:	//триллион
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "один триллион ");
+			strcat(num, "один триллион ");
 			break;
 		case 2:
-			printf("%s", "два триллиона ");
+			strcat(num, "два триллиона ");
 			break;
 		case 3:
-			printf("%s", "три триллиона ");
+			strcat(num, "три триллиона ");
 			break;
 		case 4:
-			printf("%s", "четыре триллиона ");
+			strcat(num, "четыре триллиона ");
 			break;
 		case 5:
-			printf("%s", "пять триллионов ");
+			strcat(num, "пять триллионов ");
 			break;
 		case 6:
-			printf("%s", "шесть триллионов ");
+			strcat(num, "шесть триллионов ");
 			break;
 		case 7:
-			printf("%s", "семь триллионов ");
+			strcat(num, "семь триллионов ");
 			break;
 		case 8:
-			printf("%s", "восемь триллионов ");
+			strcat(num, "восемь триллионов ");
 			break;
 		case 9:
-			printf("%s", "девять триллионов ");
+			strcat(num, "девять триллионов ");
 			break;
 		}
 		break;
@@ -527,97 +493,64 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		if (prev_digit == 0)
 		{
-			printf("%s", "триллионов ");
+			strcat(num, "триллионов ");
 		}
 		break;
-	case 14:	//сотни триллион
-		switch (digit)
-		{
-		case 1:
-			printf("%s", "сто ");
-			break;
-		case 2:
-			printf("%s", "двести ");
-			break;
-		case 3:
-			printf("%s", "триста ");
-			break;
-		case 4:
-			printf("%s", "четыреста ");
-			break;
-		case 5:
-			printf("%s", "пятьсот ");
-			break;
-		case 6:
-			printf("%s", "шестьсот ");
-			break;
-		case 7:
-			printf("%s", "семьсот ");
-			break;
-		case 8:
-			printf("%s", "восемьсот ");
-			break;
-		case 9:
-			printf("%s", "девятьсот ");
-			break;
-		}
-		break;
-	///////////////////////////////////////////////
 	case 15:	//квадриллион
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "один квадриллион ");
+			strcat(num, "один квадриллион ");
 			break;
 		case 2:
-			printf("%s", "два квадриллиона ");
+			strcat(num, "два квадриллиона ");
 			break;
 		case 3:
-			printf("%s", "три квадриллиона ");
+			strcat(num, "три квадриллиона ");
 			break;
 		case 4:
-			printf("%s", "четыре квадриллиона ");
+			strcat(num, "четыре квадриллиона ");
 			break;
 		case 5:
-			printf("%s", "пять квадриллионов ");
+			strcat(num, "пять квадриллионов ");
 			break;
 		case 6:
-			printf("%s", "шесть квадриллионов ");
+			strcat(num, "шесть квадриллионов ");
 			break;
 		case 7:
-			printf("%s", "семь квадриллионов ");
+			strcat(num, "семь квадриллионов ");
 			break;
 		case 8:
-			printf("%s", "восемь квадриллионов ");
+			strcat(num, "восемь квадриллионов ");
 			break;
 		case 9:
-			printf("%s", "девять квадриллионов ");
+			strcat(num, "девять квадриллионов ");
 			break;
 		}
 		break;
@@ -625,97 +558,64 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		if (prev_digit == 0)
 		{
-			printf("%s", "квадриллионов ");
+			strcat(num, "квадриллионов ");
 		}
 		break;
-	case 17:	//сотни квадриллионов
-		switch (digit)
-		{
-		case 1:
-			printf("%s", "сто ");
-			break;
-		case 2:
-			printf("%s", "двести ");
-			break;
-		case 3:
-			printf("%s", "триста ");
-			break;
-		case 4:
-			printf("%s", "четыреста ");
-			break;
-		case 5:
-			printf("%s", "пятьсот ");
-			break;
-		case 6:
-			printf("%s", "шестьсот ");
-			break;
-		case 7:
-			printf("%s", "семьсот ");
-			break;
-		case 8:
-			printf("%s", "восемьсот ");
-			break;
-		case 9:
-			printf("%s", "девятьсот ");
-			break;
-		}
-		break;
-	/////////////////////////////////////////////////////////
 	case 18:	//квинтиллион
 		switch (digit)
 		{
 		case 1:
-			printf("%s", "один квинтиллион ");
+			strcat(num, "один квинтиллион ");
 			break;
 		case 2:
-			printf("%s", "два квинтиллиона ");
+			strcat(num, "два квинтиллиона ");
 			break;
 		case 3:
-			printf("%s", "три квинтиллиона ");
+			strcat(num, "три квинтиллиона ");
 			break;
 		case 4:
-			printf("%s", "четыре квинтиллиона ");
+			strcat(num, "четыре квинтиллиона ");
 			break;
 		case 5:
-			printf("%s", "пять квинтиллионов ");
+			strcat(num, "пять квинтиллионов ");
 			break;
 		case 6:
-			printf("%s", "шесть квинтиллионов ");
+			strcat(num, "шесть квинтиллионов ");
 			break;
 		case 7:
-			printf("%s", "семь квинтиллионов ");
+			strcat(num, "семь квинтиллионов ");
 			break;
 		case 8:
-			printf("%s", "восемь квинтиллионов ");
+			strcat(num, "восемь квинтиллионов ");
 			break;
 		case 9:
-			printf("%s", "девять квинтиллионов ");
+			strcat(num, "девять квинтиллионов ");
 			break;
 		}
 		break;
@@ -723,95 +623,34 @@ void word_out(int digit_rank, int digit, int prev_digit)
 		switch (digit)
 		{
 		case 2:
-			printf("%s", "двадцать ");
+			strcat(num, "двадцать ");
 			break;
 		case 3:
-			printf("%s", "тридцать ");
+			strcat(num, "тридцать ");
 			break;
 		case 4:
-			printf("%s", "сорок ");
+			strcat(num, "сорок ");
 			break;
 		case 5:
-			printf("%s", "пятьдесят ");
+			strcat(num, "пятьдесят ");
 			break;
 		case 6:
-			printf("%s", "шестьдесят ");
+			strcat(num, "шестьдесят ");
 			break;
 		case 7:
-			printf("%s", "семьдесят ");
+			strcat(num, "семьдесят ");
 			break;
 		case 8:
-			printf("%s", "восемьдесят ");
+			strcat(num, "восемьдесят ");
 			break;
 		case 9:
-			printf("%s", "девяносто ");
+			strcat(num, "девяносто ");
 			break;
 		}
 		if (prev_digit == 0)
 		{
-			printf("%s", "квинтиллионов ");
+			strcat(num, "квинтиллионов ");
 		}
 		break;
-	}
-}
-
-void dec_out(int digit_rank, int digit)
-{
-	switch (digit)
-	{
-	case 0:
-		printf("%s", "десять");
-		break;
-	case 1:
-		printf("%s", "одиннадцать");
-		break;
-	case 2:
-		printf("%s", "двенадцать");
-		break;
-	case 3:
-		printf("%s", "тринадцать");
-		break;
-	case 4:
-		printf("%s", "четырнадцать");
-		break;
-	case 5:
-		printf("%s", "пятнадцать");
-		break;
-	case 6:
-		printf("%s", "шестнадцать");
-		break;
-	case 7:
-		printf("%s", "семнадцать");
-		break;
-	case 8:
-		printf("%s", "восемнадцать");
-		break;
-	case 9:
-		printf("%s", "девятнадцать");
-		break;
-	}
-	if (digit_rank == 4)
-	{
-		printf("%s", " тысяч ");
-	}
-	if (digit_rank == 7)
-	{
-		printf("%s", " миллионов ");
-	}
-	if (digit_rank == 10)
-	{
-		printf("%s", " миллиардов ");
-	}
-	if (digit_rank == 13)
-	{
-		printf("%s", " триллионов ");
-	}
-	if (digit_rank == 16)
-	{
-		printf("%s", " квадриллионов ");
-	}
-	if (digit_rank == 19)
-	{
-		printf("%s", " квинтиллионов ");
 	}
 }
