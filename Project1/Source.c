@@ -5,25 +5,27 @@
 #include <errno.h>
 #include <ctype.h>
 
-void word_out(int digit_rank, int digit, int prev_digit, char num[500]);
-void dec_out(int digit_rank, int digit, char num[500]);
-unsigned long long int strCheck(char str[256]);
+void word_out(int digit_rank, int digit, int prev_digit, char num[256]);  //запись цифры в виде числительного
+void dec_out(int digit_rank, int digit, char num[256]);					 //запись десятков числа в виде числительного
+unsigned long long int strCheck(char str[256]);							//проверка входной строки
+																	   //и преобразование её в целочисленный тип 
 
 int main()
 {
-	unsigned long long int number;          //0 to 18,446,744,073,709,551,615
-	int counter;
-	int digits[20];
-	char in[256];
-	char numeral[256];
+	unsigned long long int number;					//0 to 18,446,744,073,709,551,615
+	int counter;								   //счетчик количетсва разрядов в числе
+	int digits[20];								  //представление числа в виде массива
+	char in[256];								 //входная строка
+	char numeral[256];							//строка с числительным
+	int j;
 
 	setlocale(LC_ALL, "Rus");
 	system("color F0");
 
 	printf("Введите натуральное число не больше 18,446,744,073,709,551,615:\n");
 	gets(in);
-	number = strCheck(in);
-	switch (number)
+	number = strCheck(in);					//проверка входной строки и преобразование ее в число
+	switch (number)							//вывод сообщения об ошибке и завершение программы
 	{
 	case 0:
 		printf("Ошибка: 0 не натуральное число.\n");
@@ -45,20 +47,20 @@ int main()
 		system("pause");
 		return 4;
 		break;
-	}
+	}			   
 	printf("Введенное число: %llu \n", number);
 	numeral[0] = '\0';
-	printf("Число числительным:\n");
 	counter = 0;
-	while (number)
+	while (number)								//заполнение массива цифрами числа
 	{
 		digits[counter] = number % 10;
 		counter++;
 		number /= 10;
 	}
-	for (int j = counter - 1; j >= 0; j--)
+	j = 0;
+	for (j = counter - 1; j >= 0; j--)					//запись числа в виде числительного
 	{
-		if ((j - 1) % 3 == 0 && digits[j] == 1)
+		if ((j - 1) % 3 == 0 && digits[j] == 1)					
 		{
 			dec_out(j, digits[j - 1], numeral);
 			j -= 1;
@@ -69,6 +71,7 @@ int main()
 			else word_out(j, digits[j], digits[j - 1], numeral);
 		}
 	}
+	printf("Число числительным:\n");
 	printf(numeral);
 	printf("%c", '\n');
 	system("pause");
@@ -116,7 +119,7 @@ unsigned long long int strCheck(char str[256])
 	}
 }
 
-void dec_out(int digit_rank, int digit, char num[500])
+void dec_out(int digit_rank, int digit, char num[256])
 {
 	switch (digit)
 	{
@@ -174,7 +177,7 @@ void dec_out(int digit_rank, int digit, char num[500])
 	}
 }
 
-void word_out(int digit_rank, int digit, int prev_digit, char num[500])
+void word_out(int digit_rank, int digit, int prev_digit, char num[256])
 {
 	if (digit_rank == 2 || digit_rank == 5 || digit_rank == 8 || digit_rank == 11 || digit_rank == 14 || digit_rank == 17)
 	{
