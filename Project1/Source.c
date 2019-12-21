@@ -14,8 +14,8 @@ int main()
 	unsigned long long int number;          //0 to 18,446,744,073,709,551,615
 	int counter;
 	int digits[20];
-	char in[21];
-	char numeral[500];
+	char in[256];
+	char numeral[256];
 
 	setlocale(LC_ALL, "Rus");
 	system("color F0");
@@ -79,6 +79,16 @@ unsigned long long int strCheck(char str[256])
 {
 	int i;
 	unsigned long long int number;
+	i = 0;
+	while (i < strlen(str))
+	{
+		if (str[i] != '0')
+		{
+			str = &str[i];
+			break;
+		}
+		i++;
+	}
 	if (strlen(str) > 20)
 	{
 		return -2;
@@ -199,6 +209,60 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 			break;
 		}
 	}
+	if (digit_rank == 1 || digit_rank == 4 || digit_rank == 7 || digit_rank == 10 || digit_rank == 13 || digit_rank == 16 || digit_rank == 19)
+	{
+		switch (digit)
+		{
+		case 2:
+			strcat(num, "двадцать ");
+			break;
+		case 3:
+			strcat(num, "тридцать ");
+			break;
+		case 4:
+			strcat(num, "сорок ");
+			break;
+		case 5:
+			strcat(num, "пятьдесят ");
+			break;
+		case 6:
+			strcat(num, "шестьдесят ");
+			break;
+		case 7:
+			strcat(num, "семьдесят ");
+			break;
+		case 8:
+			strcat(num, "восемьдесят ");
+			break;
+		case 9:
+			strcat(num, "девяносто ");
+			break;
+		}
+		if (prev_digit == 0)
+		{
+			switch (digit_rank)
+			{
+			case 4:
+				strcat(num, "тысяч ");
+				break;
+			case 7:
+				strcat(num, "миллионов ");
+				break;
+			case 10:
+				strcat(num, "миллиардов ");
+				break;
+			case 13:
+				strcat(num, "триллионов ");
+				break;
+			case 16:
+				strcat(num, "квадриллионов  ");
+				break;
+			case 19:
+				strcat(num, "квинтиллионов  ");
+				break;
+			}
+		}
+	}
 	switch (digit_rank)
 	{
 	case 0: //единицы
@@ -230,35 +294,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 			break;
 		case 9:
 			strcat(num, "девять");
-			break;
-		}
-		break;
-	case 1: //десятки
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
 			break;
 		}
 		break;
@@ -294,39 +329,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 			break;
 		}
 		break;
-	case 4:	//Десятки тысяч
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
-			break;
-		}
-		if (prev_digit == 0)
-		{
-			strcat(num, "тысяч ");
-		}
-		break;
 	case 6:	//миллионы
 		switch (digit)
 		{
@@ -357,39 +359,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 		case 9:
 			strcat(num, "девять миллионов ");
 			break;
-		}
-		break;
-	case 7:	//десятки миллионов
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
-			break;
-		}
-		if (prev_digit == 0)
-		{
-			strcat(num, "миллионов ");
 		}
 		break;
 	case 9:	//миллиарды
@@ -424,39 +393,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 			break;
 		}
 		break;
-	case 10:	//десятки миллиардов
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
-			break;
-		}
-		if (prev_digit == 0)
-		{
-			strcat(num, "миллиардов ");
-		}
-		break;
 	case 12:	//триллион
 		switch (digit)
 		{
@@ -487,39 +423,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 		case 9:
 			strcat(num, "девять триллионов ");
 			break;
-		}
-		break;
-	case 13:	//десятки триллион
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
-			break;
-		}
-		if (prev_digit == 0)
-		{
-			strcat(num, "триллионов ");
 		}
 		break;
 	case 15:	//квадриллион
@@ -554,39 +457,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 			break;
 		}
 		break;
-	case 16:	//десятки квадриллионов
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
-			break;
-		}
-		if (prev_digit == 0)
-		{
-			strcat(num, "квадриллионов ");
-		}
-		break;
 	case 18:	//квинтиллион
 		switch (digit)
 		{
@@ -617,39 +487,6 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[500])
 		case 9:
 			strcat(num, "девять квинтиллионов ");
 			break;
-		}
-		break;
-	case 19:	//десятки квадриллионов
-		switch (digit)
-		{
-		case 2:
-			strcat(num, "двадцать ");
-			break;
-		case 3:
-			strcat(num, "тридцать ");
-			break;
-		case 4:
-			strcat(num, "сорок ");
-			break;
-		case 5:
-			strcat(num, "пятьдесят ");
-			break;
-		case 6:
-			strcat(num, "шестьдесят ");
-			break;
-		case 7:
-			strcat(num, "семьдесят ");
-			break;
-		case 8:
-			strcat(num, "восемьдесят ");
-			break;
-		case 9:
-			strcat(num, "девяносто ");
-			break;
-		}
-		if (prev_digit == 0)
-		{
-			strcat(num, "квинтиллионов ");
 		}
 		break;
 	}
