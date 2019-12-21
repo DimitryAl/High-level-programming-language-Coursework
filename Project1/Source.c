@@ -18,7 +18,6 @@ int main()
 	char in[256];								 //входная строка
 	char numeral[256];							//строка с числительным
 	int j;
-
 	setlocale(LC_ALL, "Rus");
 	system("color F0");
 
@@ -57,7 +56,6 @@ int main()
 		counter++;
 		number /= 10;
 	}
-	j = 0;
 	for (j = counter - 1; j >= 0; j--)					//запись числа в виде числительного
 	{
 		if ((j - 1) % 3 == 0 && digits[j] == 1)					
@@ -154,7 +152,7 @@ void dec_out(int digit_rank, int digit, char num[256])
 		strcat(num, "девятнадцать");
 		break;
 	}
-	switch (digit_rank)
+	switch (digit_rank)							//В зависимости от класса цифры вывести его название
 	{
 	case 4:
 		strcat(num, " тысяч ");
@@ -179,7 +177,7 @@ void dec_out(int digit_rank, int digit, char num[256])
 
 void word_out(int digit_rank, int digit, int prev_digit, char num[256])
 {
-	if (digit_rank == 2 || digit_rank == 5 || digit_rank == 8 || digit_rank == 11 || digit_rank == 14 || digit_rank == 17)
+	if (digit_rank == 2 || digit_rank == 5 || digit_rank == 8 || digit_rank == 11 || digit_rank == 14 || digit_rank == 17)								//Если цифра находится в разряде сотен
 	{
 		switch (digit)
 		{
@@ -212,7 +210,7 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[256])
 			break;
 		}
 	}
-	if (digit_rank == 1 || digit_rank == 4 || digit_rank == 7 || digit_rank == 10 || digit_rank == 13 || digit_rank == 16 || digit_rank == 19)
+	if (digit_rank == 1 || digit_rank == 4 || digit_rank == 7 || digit_rank == 10 || digit_rank == 13 || digit_rank == 16 || digit_rank == 19)						//Если цифра находится в разряде десятков
 	{
 		switch (digit)
 		{
@@ -241,7 +239,7 @@ void word_out(int digit_rank, int digit, int prev_digit, char num[256])
 			strcat(num, "девяносто ");
 			break;
 		}
-		if (prev_digit == 0)
+		if (prev_digit == 0)														//Если предыдущая цифра равна нулю, то добавляем в сткору с числительным соотвествующее название класса
 		{
 			switch (digit_rank)
 			{
